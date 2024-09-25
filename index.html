@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<style>
+		body{
+			/*background-image: url('background.jpg'); 
+			background-size: cover; 
+			background-position: center;*/
+			margin-top: 0;
+			margin-left: 4vw;
+			margin-right: 4vw;
+			overflow: hidden;}
+		@font-face {
+		    font-family: 'WAGURITTF';
+		    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2403@1.0/WAGURITTF.woff2') format('woff2');
+		    font-weight: normal;
+		    font-style: normal;}
+		.text {
+			font-family:WAGURITTF;
+			color: #d8cfdc;
+			font-size: 4vw;
+			text-align: left;
+			margin-top: -5vh;
+			margin-left: 2vw;
+			filter: drop-shadow(0px 3px 3px rgba(0,0,0,0)); }
+		.paris {
+			color: #2d619f}
+		.play {
+			color: #d8cfdc;
+			font-size: 2.5vw;
+			position: absolute;
+		    top: 33vh;
+		    left: 55.5vw;
+		    text-align: left;
+		    margin-right: 2vw;
+		    line-height: 1.5;}
+		.pause {
+			color: #d8cfdc;
+			font-size: 2.5vw;
+			position: absolute;
+		    top: 4vh;
+		    left: 39.5vw;
+		    text-align: left;
+		    margin-right: 2vw;
+		    line-height: 1.5;}
+		.overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0); /* 검정색 반투명 오버레이 */
+            /* 0.5의 마지막 값으로 투명도 조절 (0: 완전 투명, 1: 불투명) */
+            z-index: -1; /* 다른 요소 위에 보이도록 설정 */
+        }   
+
+	
+		#player {width: 50vw;}
+		#stella {
+			width: 20vw;
+			position: absolute; 
+			top: 23vh; 
+			left: 60vw; 
+			transform: rotate(-18deg);
+			filter: drop-shadow(10.5px 3px 0px rgba(216,207,220, 1));}
+		#rose  {
+			width: 20vw;
+			position: absolute; 
+			top: 55vh; 
+			left: 50vw; 
+			transform: rotate(15deg);
+			filter: drop-shadow(10.5px -3px 0px rgba(216,207,220, 1));}
+		#vois  {
+			width: 20vw;
+			position: absolute; 
+			top: 44vh; 
+			left: 70vw; 
+			transform: rotate(5deg);
+			filter: drop-shadow(10.5px -1px 0px rgba(216,207,220, 1));}
+	</style>
+</head>
+
+<body>
+	<div class="overlay"></div>
+	<img src="player.gif" id="player"></img>
+	<p class="play"> ▶</p>
+	<p class="pause"> ❚❚</p>
+	<img src="stella.png" id="stella"></img>
+	<h1 class="text">Play<br>the<br><span class="paris">PARIS!</span></h1>
+	<img src="rose.png" id="rose" ></img>
+	<img src="vois.png" id="vois"></img>
+
+	
+
+	<audio id="musicStella" src="stella.mp3"></audio>
+	<audio id="musicRose" src="rose.mp3"></audio> 
+	<audio id="musicVois" src="vois.mp3"></audio> 
+
+	<script>
+
+		document.getElementById("player").src = "player_still.png";
+
+		let isPlaying = false; // GIF가 재생 중인지 여부 확인용 변수
+
+		// GIF를 재생시키는 함수
+		function playGIF() {
+			document.getElementById("player").src = "player.gif";
+			isPlaying = true;
+		}
+
+		// GIF를 정지시키는 함수 (정지된 이미지로 교체)
+		function stopGIF() {
+			document.getElementById("player").src = "player_still.png";
+			isPlaying = false;
+		}
+
+		// 공통 함수: 이미지 클릭 시 GIF 재생, 이미지 숨기기, 특정 음악 재생
+		function handleImageClick(imageId, audioId) {
+			playGIF(); // GIF 다시 재생
+
+			// 클릭한 이미지 숨기기
+			document.getElementById(imageId).style.display = "none";
+
+			// 다른 음악 멈추기
+			document.getElementById("musicStella").pause();
+			document.getElementById("musicRose").pause();
+			document.getElementById("musicVois").pause();
+
+			// 현재 음악 재생
+			document.getElementById(audioId).play();
+		}
+
+		// 각 이미지에 클릭 이벤트 추가
+		document.getElementById("stella").addEventListener("click", function() {
+			handleImageClick("stella", "musicStella");
+		});
+
+		document.getElementById("rose").addEventListener("click", function() {
+			handleImageClick("rose", "musicRose");
+		});
+
+		document.getElementById("vois").addEventListener("click", function() {
+			handleImageClick("vois", "musicVois");
+		});
+
+		// player 클릭 시 GIF를 정지하고 이미지와 음악 초기화
+		document.getElementById("player").addEventListener("click", function() {
+			if (isPlaying) {
+				// GIF 정지시키기
+				stopGIF();
+
+				// 숨겨졌던 이미지 다시 나타내기
+				document.getElementById("stella").style.display = "block";
+				document.getElementById("rose").style.display = "block";
+				document.getElementById("vois").style.display = "block";
+
+				// 모든 음악 멈추기
+				document.getElementById("musicStella").pause();
+				document.getElementById("musicRose").pause();
+				document.getElementById("musicVois").pause();
+
+				// 음악을 처음부터 재생할 수 있도록 currentTime 초기화
+				document.getElementById("musicStella").currentTime = 0;
+				document.getElementById("musicRose").currentTime = 0;
+				document.getElementById("musicVois").currentTime = 0;
+			}
+		});
+	</script>
+</body>
+</html>
